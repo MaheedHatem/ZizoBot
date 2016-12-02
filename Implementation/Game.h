@@ -85,6 +85,15 @@ public:
 			*/
 		}
 
+		if (actionType == Action::NO_ACTION)
+		{
+			/*
+				Write the No Action logic here
+			*/
+
+			/*
+			*/
+		}
 	}
 };
 #endif // ! _GAME_H
