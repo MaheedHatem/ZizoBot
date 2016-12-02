@@ -9,7 +9,7 @@
 class Game 
 {
 private:
-	unsigned int m_grid[MAX_GRID_ROWS][MAX_GRID_COLS];
+	int m_grid[MAX_GRID_ROWS][MAX_GRID_COLS];
 	Team m_homeTeam;
 	Team m_awayTeam;
 	Ball m_ball;
@@ -58,42 +58,129 @@ public:
 		initialiseGrid();
 		m_homeTeam = home;
 		m_awayTeam = away; 
-		m_rods[0].setRodParameters(home, DEFENSE);
-		m_rods[1].setRodParameters(away, ATTACK);
-		m_rods[2].setRodParameters(home, ATTACK);
-		m_rods[3].setRodParameters(away, DEFENSE);
+		m_rods[0].setRodParameters(RED, DEFENSE);
+		m_rods[1].setRodParameters(BLUE, ATTACK);
+		m_rods[2].setRodParameters(RED, ATTACK);
+		m_rods[3].setRodParameters(BLUE, DEFENSE);
 	};
 
 	void InitialiseGame() {
 		m_ball.resetBallPosition();
+		updateGrid();
 	}
 
-	void updateBall(RodAction action)
+	void Print() {
+		printMatrix(m_grid, m_ball.getBallPosition());
+	}
+
+	void updateBall()
 	{
-		int rodIndex = getRodInControl();
-		BallPosition ball = m_ball.getBallPosition();
-		Action actionType = action.getActionType();
-		if (actionType = Action::MOVE) {
-			/*
-				Write the move logic here
-			*/
-		}
-
-		if (actionType == Action::KICK && m_grid[ball.x][ball.y]) {
-			/*
-				Write the kick logic here
-			*/
-		}
-
-		if (actionType == Action::NO_ACTION)
+		BallPosition position = m_ball.getBallPosition();
+		int source = m_ball.getBallSource();
+		int power = m_ball.getBallPower();
+		BallDirection direction = m_ball.getBallDirection();
+		if (power <= 0)
+			return;
+		/* If the ball hit a player position */
+		if (m_grid[position.x][position.y] == 5)
 		{
-			/*
-				Write the No Action logic here
-			*/
-
-			/*
-			*/
+			int rodIndex = getRodInControl();
+			if (m_rods[rodIndex].m_team != source) {
+				rebound();
+				source = m_ball.getBallSource();
+			}
 		}
+		/* If the ball has remaining power */
+		if (m_ball.getBallPower() > 0) {
+			moveBall(position, source, direction);
+		}
+	}
+
+	void updateGame(RodAction action, int rodIndex)
+	{
+		Action actionType = action.getActionType();
+		BallPosition ballPosition = m_ball.getBallPosition();
+		if (actionType == Action::MOVE) {
+			int direction = action.getActionDirection();
+			m_rods[rodIndex].changeOffset(direction);
+			return;
+		} 
+
+		if (actionType == Action::KICK && m_grid[ballPosition.x][ballPosition.y]) 
+		{
+			m_ball.setBallPower(action.getActionForce());
+			m_ball.setBallDirection(action.getActionDirection());
+			if (m_rods[rodIndex].m_team == Team::RED)
+			{
+				m_ball.setBallSource(1);
+			}
+			else
+			{
+				m_ball.setBallSource(-1);
+			}
+		}
+	}
+
+	void GameLoop(RodAction actions[]) {
+		int rodinControl = getRodInControl();
+		if (actions[rodinControl].getActionType() == Action::KICK)
+			updateGame(actions[rodinControl], rodinControl);
+
+		updateBall();
+		for (int i = 0; i < RODS; ++i) {
+			/* Skips the rod in control */
+			if (i == rodinControl && actions[i].getActionType() == Action::KICK)
+				continue;
+
+			/* Changes the Kick Action into No Action */
+			if (actions[i].getActionType() == Action::KICK)
+				continue;
+
+			/* Otherwise, Update the rods accordingly*/
+			updateGame(actions[i], i);
+		}
+		updateGrid();
+	}
+
+	void rebound() {
+		int source = -1 * m_ball.getBallSource();
+		m_ball.setBallSource(source);
+		m_ball.setBallPower(2);
+	}
+
+	void moveBall(BallPosition position, int source, BallDirection direction) {
+		BallPosition pos = position;
+		if (direction == UP && source == 1) {
+			pos.x--;
+			pos.y++;
+			m_ball.updateBallPosition(pos);
+		}
+		else if (direction == UP && source == -1) {
+			pos.x--;
+			pos.y--;
+			m_ball.updateBallPosition(pos);
+		}
+		else if (direction == FORWARD && source == 1) {
+			pos.y++;
+			m_ball.updateBallPosition(pos);
+		}
+		else if (direction == FORWARD && source == -1) {
+			pos.y--;
+			m_ball.updateBallPosition(pos);
+		}
+		else if (direction == DOWN && source == 1) {
+			pos.x++;
+			pos.y++;
+			m_ball.updateBallPosition(pos);
+		}
+		else if (direction == DOWN && source == -1) {
+			pos.x++;
+			pos.y--;
+			m_ball.updateBallPosition(pos);
+		}
+		int power = m_ball.getBallPower();
+		power--;
+		m_ball.setBallPower(power);
 	}
 };
 #endif // ! _GAME_H

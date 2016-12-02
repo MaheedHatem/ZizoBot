@@ -10,7 +10,8 @@ private:
 	int m_actionForce; 
 	int m_direction; 
 public:
-	RodAction() :m_actionType(NO_ACTION), m_actionForce(0), m_direction(0)
+	RodAction(Action actionType = NO_ACTION, int direction = 0, int force = 0)
+		: m_actionType(actionType), m_actionForce(force), m_direction(direction)
 	{ };
 
 	/**
@@ -46,7 +47,19 @@ public:
 		m_actionForce = power; 
 		return true;
 	}
+	
+	bool setNoAction()
+	{
+		m_actionType = NO_ACTION;
+		m_direction = 0;
+		m_actionForce = 0;
+		return true;
+	}
 
+	void setActionType(Action action)
+	{
+		m_actionType = action;
+	}
 	Action getActionType() const
 	{
 		return m_actionType;

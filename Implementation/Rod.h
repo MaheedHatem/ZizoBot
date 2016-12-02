@@ -6,7 +6,6 @@
 class Rod
 {
 private:
-	Team m_team; 
 	RodPosition m_position; 
 	unsigned int m_rodNo;
 	unsigned int m_offset;
@@ -25,6 +24,7 @@ private:
 	}
 
 public:
+	Team m_team;
 	unsigned int m_from_range;
 	unsigned int m_to_range;
 	Rod() : m_offset(1), m_from_range(0), m_to_range(0)
