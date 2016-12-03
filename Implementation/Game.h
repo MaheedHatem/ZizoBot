@@ -12,6 +12,7 @@ private:
 	int m_grid[MAX_GRID_ROWS][MAX_GRID_COLS];
 	Team m_homeTeam;
 	Team m_awayTeam;
+	Team m_winningTeam;
 	Ball m_ball;
 	Rod m_rods[RODS];
 
@@ -58,7 +59,8 @@ public:
 	Game(Team home, Team away) {
 		initialiseGrid();
 		m_homeTeam = home;
-		m_awayTeam = away; 
+		m_awayTeam = away;
+		m_winningTeam = home;
 		m_rods[0].setRodParameters(RED, DEFENSE);
 		m_rods[1].setRodParameters(BLUE, ATTACK);
 		m_rods[2].setRodParameters(RED, ATTACK);
@@ -72,6 +74,21 @@ public:
 
 	void Print() {
 		printMatrix(m_grid, m_ball.getBallPosition());
+	}
+
+	void step(RodAction rodActions[]) {
+		bool gameEnd = false;
+		if (GameLoop(rodActions))
+			gameEnd = true;
+		printMatrix(m_grid, m_ball.getBallPosition());
+		
+		if (gameEnd) {
+			if (m_winningTeam == RED)
+				cout << "WINNER : RED TEAM" << endl;
+			else
+				cout << "WINNER : BLUE TEAM" << endl;
+		}
+		
 	}
 
 	/**
@@ -137,10 +154,14 @@ public:
 	/** 
 		This function is responsible for one iteration of the game. 
 		@param actions[] an array of actions to be performed on every rod successively. 
+		@return true if the current iteration ended with scoring a goal, false otherwise.
 	*/
-	void GameLoop(RodAction actions[]) {
+	bool GameLoop(RodAction actions[]) {
 		/* Find the rod that can do something with the ball */
 		int rodinControl = getRodInControl();
+
+		/* Find the position of the ball before updating */
+		BallPosition oldPosition = m_ball.getBallPosition();
 
 		/* Perform the kick action first if exists */
 		if (actions[rodinControl].getActionType() == KICK)
@@ -148,6 +169,16 @@ public:
 
 		/* updates the ball position accordingly */
 		updateBall();
+
+		/* check if the ball is a goal position and announce the winner */
+		if (isGoal() && (oldPosition == m_ball.getBallPosition())) 
+		{
+			if (rodinControl == 0)
+				m_winningTeam = BLUE;
+			else
+				m_winningTeam = RED;
+			return true;
+		}
 
 		/* updates the remaining rods */
 		for (int i = 0; i < RODS; ++i) {
@@ -165,6 +196,7 @@ public:
 
 		/* updates the game grid */
 		updateGrid();
+		return false;
 	}
 
 	void moveBall() {
@@ -204,5 +236,23 @@ public:
 		power--;
 		m_ball.setBallPower(power);
 	}
+
+	bool isGoal()
+	{
+		/* Check if the ball has power enough to be scored */
+		if (m_ball.getBallPower() <= 0)
+			return false;
+
+		/* Get the current position of the ball */
+		BallPosition position = m_ball.getBallPosition();
+
+		/* Check the positions where a ball can be a goal*/
+		if (position.x >= 2 && position.x <= 4
+			&& (position.y == 0 || position.y == MAX_GRID_COLS - 1))
+			return true;
+		else
+			return false;
+	}
+	
 };
 #endif // ! _GAME_H

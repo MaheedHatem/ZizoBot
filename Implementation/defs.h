@@ -9,6 +9,14 @@ using namespace std;
 struct BallPosition {
 	unsigned int x; 
 	unsigned int y;
+
+	bool operator==(BallPosition &comp) {
+		if (x != comp.x)
+			return false;
+		if (y != comp.y)
+			return false;
+		return true;
+	}
 };
 
 void printMatrix (int matrix[MAX_GRID_ROWS][MAX_GRID_COLS], BallPosition ball) {
