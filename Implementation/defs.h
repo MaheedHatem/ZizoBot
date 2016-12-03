@@ -11,7 +11,7 @@ struct BallPosition {
 	unsigned int y;
 };
 
-void printMatrix(int matrix[MAX_GRID_ROWS][MAX_GRID_COLS], BallPosition ball) {
+void printMatrix (int matrix[MAX_GRID_ROWS][MAX_GRID_COLS], BallPosition ball) {
 	for (int i = 0; i < MAX_GRID_ROWS; ++i) {
 		for (int j = 0; j < MAX_GRID_COLS; ++j) {
 			if (i == ball.x && j == ball.y)
@@ -30,5 +30,5 @@ enum RodPosition {DEFENSE, ATTACK};
 
 enum Action {MOVE, KICK, NO_ACTION};
 
-enum BallDirection {UP, FORWARD, DOWN};
+enum Direction {UP = 1, FORWARD = 0, DOWN = -1};
 

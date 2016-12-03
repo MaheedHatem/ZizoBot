@@ -64,11 +64,11 @@ public:
 		return (ballPosition >= m_from_range && ballPosition <= m_to_range);
 	}
 
-	void changeOffset(int direction) 
+	void changeOffset(Direction direction) 
 	{
-		if (direction == 1)
+		if (direction == UP)
 			incrementOffset();
-		else
+		else if (direction == DOWN)
 			decrementOffset();
 	}
 

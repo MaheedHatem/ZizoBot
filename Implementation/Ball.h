@@ -8,8 +8,8 @@
 class Ball {
 private:
 	BallPosition m_position;
-	BallDirection m_direction;
-	int m_source; //indicates how the ball is moving
+	Direction m_direction;
+	int m_source; 
 	int m_power;
 	
 	bool isValidx(unsigned int x) {
@@ -21,13 +21,15 @@ private:
 	}
 
 public:
-	Ball() 
+	Ball() : m_direction(FORWARD), m_power(0), m_source(-1)
 	{
-		m_direction = BallDirection::FORWARD;
-		m_power = 0;
-		m_source = -1;
 		resetBallPosition();
-	};
+	}
+
+	void resetBallPosition() {
+		m_position.x = 3;
+		m_position.y = 5;
+	}
 
 	void updateBallPosition(BallPosition newPos) {
 		if (isValidx(newPos.x) && isValidy(newPos.y))
@@ -37,24 +39,19 @@ public:
 		}
 	}
 
-	BallPosition getBallPosition() {
+	BallPosition getBallPosition() const {
 		return m_position;
 	}
 
-	void resetBallPosition() {
-		m_position.x = 3;
-		m_position.y = 5;
-	}
-
-	BallDirection getBallDirection() {
+	Direction getBallDirection() const {
 		return m_direction;
 	}
 
-	int getBallPower() {
+	int getBallPower() const {
 		return m_power;
 	}
 
-	int getBallSource() {
+	int getBallSource() const {
 		return m_source;
 	}
 
@@ -70,13 +67,8 @@ public:
 		}
 	}
 
-	void setBallDirection(int direction) {
-		if (direction == 1)
-			m_direction = UP;
-		else if (direction == 0)
-			m_direction = FORWARD;
-		else if (direction == -1)
-			m_direction = DOWN;
+	void setBallDirection(Direction direction) {
+		m_direction = direction;
 	}
 
 };

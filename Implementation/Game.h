@@ -51,6 +51,7 @@ private:
 				return i;
 			}
 		}
+		return -1;
 	}
 
 public:
@@ -73,110 +74,131 @@ public:
 		printMatrix(m_grid, m_ball.getBallPosition());
 	}
 
+	/**
+		This function UPDATES the position of the ball according to the status of the game.
+	*/
 	void updateBall()
 	{
+		/* Get current ball position */
 		BallPosition position = m_ball.getBallPosition();
-		int source = m_ball.getBallSource();
-		int power = m_ball.getBallPower();
-		BallDirection direction = m_ball.getBallDirection();
-		if (power <= 0)
+
+		/* The ball moves if and only if it has some remaining power */
+		if (m_ball.getBallPower() <= 0)
 			return;
+
 		/* If the ball hit a player position */
 		if (m_grid[position.x][position.y] == 5)
 		{
 			int rodIndex = getRodInControl();
-			if (m_rods[rodIndex].m_team != source) {
-				rebound();
-				source = m_ball.getBallSource();
+			/* The ball rebounds only if it hits an opponent player */
+			if (m_rods[rodIndex].m_team != m_ball.getBallSource()) {
+				reboundBall();
 			}
 		}
-		/* If the ball has remaining power */
+
+		/* Do the actual moving */
 		if (m_ball.getBallPower() > 0) {
-			moveBall(position, source, direction);
+			moveBall();
 		}
 	}
 
+	void reboundBall() {
+		int source = m_ball.getBallSource() * -1;
+		m_ball.setBallSource(source);
+		m_ball.setBallPower(2);
+	}
+
+	/**
+		This function performs an action on a specific rod
+		@param action to performed on a rod (KICK, MOVE, NO_ACTION)
+		@param rodIndex the index of the rod to be acted upon (1, 2, 3, 4)
+	*/
 	void updateGame(RodAction action, int rodIndex)
 	{
+		/* Get the type of action performed */
 		Action actionType = action.getActionType();
+
+		/* Get the current ball position */
 		BallPosition ballPosition = m_ball.getBallPosition();
+		
 		if (actionType == Action::MOVE) {
-			int direction = action.getActionDirection();
+			Direction direction = action.getActionDirection();
 			m_rods[rodIndex].changeOffset(direction);
-			return;
 		} 
 
 		if (actionType == Action::KICK && m_grid[ballPosition.x][ballPosition.y]) 
 		{
 			m_ball.setBallPower(action.getActionForce());
 			m_ball.setBallDirection(action.getActionDirection());
-			if (m_rods[rodIndex].m_team == Team::RED)
-			{
-				m_ball.setBallSource(1);
-			}
-			else
-			{
-				m_ball.setBallSource(-1);
-			}
+			m_ball.setBallSource(m_rods[rodIndex].m_team);
 		}
 	}
 
+	/** 
+		This function is responsible for one iteration of the game. 
+		@param actions[] an array of actions to be performed on every rod successively. 
+	*/
 	void GameLoop(RodAction actions[]) {
+		/* Find the rod that can do something with the ball */
 		int rodinControl = getRodInControl();
-		if (actions[rodinControl].getActionType() == Action::KICK)
+
+		/* Perform the kick action first if exists */
+		if (actions[rodinControl].getActionType() == KICK)
 			updateGame(actions[rodinControl], rodinControl);
 
+		/* updates the ball position accordingly */
 		updateBall();
+
+		/* updates the remaining rods */
 		for (int i = 0; i < RODS; ++i) {
 			/* Skips the rod in control */
-			if (i == rodinControl && actions[i].getActionType() == Action::KICK)
+			if (i == rodinControl && actions[i].getActionType() == KICK)
 				continue;
 
 			/* Changes the Kick Action into No Action */
-			if (actions[i].getActionType() == Action::KICK)
+			if (actions[i].getActionType() == KICK)
 				continue;
 
 			/* Otherwise, Update the rods accordingly*/
 			updateGame(actions[i], i);
 		}
+
+		/* updates the game grid */
 		updateGrid();
 	}
 
-	void rebound() {
-		int source = -1 * m_ball.getBallSource();
-		m_ball.setBallSource(source);
-		m_ball.setBallPower(2);
-	}
+	void moveBall() {
+		BallPosition position = m_ball.getBallPosition();
+		Direction direction = m_ball.getBallDirection();
+		int source = m_ball.getBallSource();
 
-	void moveBall(BallPosition position, int source, BallDirection direction) {
-		BallPosition pos = position;
 		if (direction == UP && source == 1) {
-			pos.x--;
-			pos.y++;
-			m_ball.updateBallPosition(pos);
+			position.x--;
+			position.y++;
+			m_ball.updateBallPosition(position);
 		}
 		else if (direction == UP && source == -1) {
-			pos.x--;
-			pos.y--;
-			m_ball.updateBallPosition(pos);
+			position.x--;
+			position.y--;
+			m_ball.updateBallPosition(position);
 		}
 		else if (direction == FORWARD && source == 1) {
-			pos.y++;
-			m_ball.updateBallPosition(pos);
+			position.y++;
+			m_ball.updateBallPosition(position);
 		}
 		else if (direction == FORWARD && source == -1) {
-			pos.y--;
-			m_ball.updateBallPosition(pos);
+			position.y--;
+			m_ball.updateBallPosition(position);
 		}
 		else if (direction == DOWN && source == 1) {
-			pos.x++;
-			pos.y++;
-			m_ball.updateBallPosition(pos);
+			position.x++;
+			position.y++;
+			m_ball.updateBallPosition(position);
 		}
 		else if (direction == DOWN && source == -1) {
-			pos.x++;
-			pos.y--;
-			m_ball.updateBallPosition(pos);
+			position.x++;
+			position.y--;
+			m_ball.updateBallPosition(position);
 		}
 		int power = m_ball.getBallPower();
 		power--;

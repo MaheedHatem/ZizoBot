@@ -3,6 +3,7 @@
 using namespace std;
 
 
+// A simple program to drive the code
 void main() {
 	Team homeTeam = Team::RED;
 	Team awayTeam = Team::BLUE;
@@ -11,17 +12,12 @@ void main() {
 	game.InitialiseGame();
 	game.Print();
 	
-	RodAction rodActions[4];
-	RodAction action1(Action::NO_ACTION);
-	RodAction action2(Action::NO_ACTION);
-	RodAction action3(Action::KICK, 0, 2);
-	RodAction action4(Action::NO_ACTION);
+	RodAction action1(NO_ACTION);
+	RodAction action2(NO_ACTION);
+	RodAction action3(KICK, FORWARD, 2);
+	RodAction action4(NO_ACTION);
 
-	rodActions[0] = action1;
-	rodActions[1] = action2;
-	rodActions[2] = action3;
-	rodActions[3] = action4;
-
+	RodAction rodActions[4] = { action1, action2, action3, action4 };
 	game.GameLoop(rodActions);
 	game.Print();
 
@@ -29,7 +25,7 @@ void main() {
 	game.GameLoop(rodActions);
 	game.Print();
 
-	rodActions[2].setActionKick(1, 3);
+	rodActions[2].setActionKick(UP, 3);
 	game.GameLoop(rodActions);
 	game.Print();
 
@@ -46,33 +42,29 @@ void main() {
 	game.GameLoop(rodActions);
 	game.Print();
 
-	rodActions[3].setActionMove(1);
+	rodActions[3].setActionMove(UP);
 	game.GameLoop(rodActions);
 	game.Print();
 
-	rodActions[2].setNoAction();
-	rodActions[3].setActionKick(-1, 5);
+	rodActions[3].setActionKick(DOWN, 5);
 	game.GameLoop(rodActions);
 	game.Print();
 
-	rodActions[2].setNoAction();
 	rodActions[3].setNoAction();
-
-	for (int i = 0; i < 5; i++) {	
+	for (int i = 0; i < 4; i++) {	
 		game.GameLoop(rodActions);
 		game.Print();
 	}
 
-	rodActions[1].setActionKick(1, 2);
+	rodActions[1].setActionKick(UP, 2);
 	game.GameLoop(rodActions);
 	game.Print();
 
-	rodActions[3].setActionKick(1, 5);
+	rodActions[3].setActionKick(UP, 5);
 	rodActions[1].setNoAction();
 	game.GameLoop(rodActions);
 	game.Print();
 
-	rodActions[1].setNoAction();
 	game.GameLoop(rodActions);
 	game.Print();
 
