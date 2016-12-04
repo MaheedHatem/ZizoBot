@@ -12,11 +12,11 @@ private:
 	int m_source; 
 	int m_power;
 	
-	bool isValidx(unsigned int x) {
+	bool isValidx(int x) {
 		return(x >= 0 && x < MAX_GRID_ROWS);
 	}
 
-	bool isValidy(unsigned int y) {
+	bool isValidy(int y) {
 		return(y >= 0 && y < MAX_GRID_COLS);
 	}
 
@@ -31,12 +31,14 @@ public:
 		m_position.y = 5;
 	}
 
-	void updateBallPosition(BallPosition newPos) {
+	bool updateBallPosition(BallPosition newPos) {
 		if (isValidx(newPos.x) && isValidy(newPos.y))
 		{
 			m_position.x = newPos.x;
 			m_position.y = newPos.y;
+			return true;
 		}
+		return false;
 	}
 
 	BallPosition getBallPosition() const {

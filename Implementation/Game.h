@@ -207,34 +207,33 @@ public:
 		if (direction == UP && source == 1) {
 			position.x--;
 			position.y++;
-			m_ball.updateBallPosition(position);
 		}
 		else if (direction == UP && source == -1) {
 			position.x--;
 			position.y--;
-			m_ball.updateBallPosition(position);
 		}
 		else if (direction == FORWARD && source == 1) {
 			position.y++;
-			m_ball.updateBallPosition(position);
 		}
 		else if (direction == FORWARD && source == -1) {
 			position.y--;
-			m_ball.updateBallPosition(position);
 		}
 		else if (direction == DOWN && source == 1) {
 			position.x++;
 			position.y++;
-			m_ball.updateBallPosition(position);
 		}
 		else if (direction == DOWN && source == -1) {
 			position.x++;
 			position.y--;
-			m_ball.updateBallPosition(position);
 		}
-		int power = m_ball.getBallPower();
-		power--;
-		m_ball.setBallPower(power);
+
+		/*If the ball new position is inside the grid */
+		if (m_ball.updateBallPosition(position))
+		{
+			int power = m_ball.getBallPower();
+			power--;
+			m_ball.setBallPower(power);
+		}
 	}
 
 	bool isGoal()

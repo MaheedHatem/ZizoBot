@@ -7,8 +7,8 @@
 using namespace std;
 
 struct BallPosition {
-	unsigned int x; 
-	unsigned int y;
+	int x; 
+	int y;
 
 	bool operator==(BallPosition &comp) {
 		if (x != comp.x)
