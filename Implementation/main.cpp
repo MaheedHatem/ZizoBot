@@ -17,7 +17,16 @@ void Game1()
 	RodAction action4(NO_ACTION);
 
 	RodAction rodActions[4] = { action1, action2, action3, action4 };
+	
+	//get the opponent actions from the integration.
+	//RodAction rodActions = getOpponentActions();
+	//RodAction rodActions;
+	//agent logic
+	rodActions = game.getActions();
+	//game logic
 	game.step(rodActions);
+
+
 	rodActions[2].setNoAction();
 	game.step(rodActions);
 	rodActions[2].setActionKick(UP, 3);

@@ -9,13 +9,6 @@
 class Game 
 {
 private:
-	int m_grid[MAX_GRID_ROWS][MAX_GRID_COLS];
-	Team m_homeTeam;
-	Team m_awayTeam;
-	Team m_winningTeam;
-	Ball m_ball;
-	Rod m_rods[RODS];
-
 	void initialiseGrid() {
 		for (unsigned int i = 0; i < MAX_GRID_ROWS; ++i) {
 			for (unsigned int j = 0; j < MAX_GRID_COLS; ++j) {
@@ -56,7 +49,15 @@ private:
 	}
 
 public:
-	Game(Team home, Team away) {
+	int m_grid[MAX_GRID_ROWS][MAX_GRID_COLS];
+	Ball m_ball;
+	Rod m_rods[RODS];
+	Team m_homeTeam;
+	Team m_awayTeam;
+	Team m_winningTeam;
+	RodAction m_lastKickPosition;
+
+	Game(Team home = RED, Team away = BLUE) {
 		initialiseGrid();
 		m_homeTeam = home;
 		m_awayTeam = away;
@@ -252,6 +253,96 @@ public:
 		else
 			return false;
 	}
+
+	void getActions(RodAction(&rodActions)[4]) {
+
+		
+	}
+
+	void simpleReflex(RodAction(&rodActions)[4]) 
+	{
+		BallPosition position = m_ball.getBallPosition();
+
+		if (m_homeTeam == RED)
+		{
+			if (position.y == 2)
+			{
+				if (m_ball.getBallPower() == 0)
+					rodActions[0] = Match(m_rods[0]);
+				else
+					rodActions[0].setNoAction();
+			}
+			if (position.y == 3)
+			{
+				rodActions[0] = Match(m_rods[0]);
+			}
+			if (position.y == 5)
+			{
+				if (m_ball.getBallPower() == 0)
+					rodActions[2] = Match(m_rods[2]);
+				else
+					rodActions[2] = Match(m_rods[2]);
+			}
+			if (position.y == 7) 
+			{
+				if (m_ball.getBallPower() == 0)
+					rodActions[2] = Match(m_rods[2]);
+				else
+					rodActions[2].setNoAction();
+			}
+			if (position.y == 8)
+			{
+				rodActions[2] = Match(m_rods[2]);
+			}
+		}
+		else
+		{
+			if (position.y == 8)
+			{
+				if (m_ball.getBallPower() == 0)
+					rodActions[3] = Match(m_rods[3]);
+				else
+					rodActions[3].setNoAction();
+			}
+			if (position.y == 7)
+			{
+				rodActions[3] = Match(m_rods[3]);
+			}
+			if (position.y == 3)
+			{
+				if (m_ball.getBallPower() == 0)
+					rodActions[1] = Match(m_rods[1]);
+				else
+					rodActions[1].setNoAction();
+			}
+			if (position.y == 2)
+			{
+				rodActions[1] = Match(m_rods[1]);
+			}
+		}
+
+	}
 	
+	RodAction Match(Rod rod) {
+		BallPosition position = m_ball.getBallPosition();
+		if (m_grid[position.x][rod.getPositionInGrid()] == 5)
+			return RodAction(NO_ACTION);
+
+		if (rod.getOffset() == 0) {
+			return RodAction(MOVE, DOWN);
+		}
+		else if (rod.getOffset() == 2) {
+			return RodAction(MOVE, UP);
+		} 
+		else
+		{
+			int middlePlayer = rod.getOffset() + 2;
+			if (position.x < middlePlayer)
+				return RodAction(MOVE, UP);
+			else
+				return RodAction(MOVE, DOWN);
+		}
+	}
 };
+
 #endif // ! _GAME_H

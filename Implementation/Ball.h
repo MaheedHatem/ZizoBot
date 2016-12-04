@@ -31,7 +31,16 @@ public:
 		m_position.y = 5;
 	}
 
+	bool isOnBorder(BallPosition newPos) {
+		return (newPos.x == 0 || newPos.x == 6 ||
+			((newPos.x == 1) && (newPos.y == 0 || newPos.y == 10)) ||
+			((newPos.x == 5) && (newPos.y == 0 || newPos.y == 10)));
+	}
 	bool updateBallPosition(BallPosition newPos) {
+		/* If the position of the ball is on the borders */
+		if (isOnBorder(newPos))
+			m_power = 0;
+
 		if (isValidx(newPos.x) && isValidy(newPos.y))
 		{
 			m_position.x = newPos.x;
