@@ -25,8 +25,8 @@ private:
 
 public:
 	Team m_team;
-	unsigned int m_from_range;
-	unsigned int m_to_range;
+	int m_from_range;
+	int m_to_range;
 	Rod() : m_offset(1), m_from_range(0), m_to_range(0)
 	{ };
 
@@ -60,7 +60,7 @@ public:
 		}
 	}
 
-	bool isInReach(unsigned int ballPosition) {
+	bool isInRange(int ballPosition) {
 		return (ballPosition >= m_from_range && ballPosition <= m_to_range);
 	}
 

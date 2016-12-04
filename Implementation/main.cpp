@@ -22,7 +22,7 @@ void Game1()
 	//RodAction rodActions = getOpponentActions();
 	//RodAction rodActions;
 	//agent logic
-	rodActions = game.getActions();
+	//rodActions = game.getActions();
 	//game logic
 	game.step(rodActions);
 

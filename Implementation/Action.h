@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include "defs.h"
+
 class RodAction {
 private:
 	Action m_actionType;

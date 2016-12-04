@@ -40,7 +40,7 @@ private:
 		int ballPosition = m_ball.getBallPosition().y;
 		for (unsigned int i = 0; i < 4; ++i)
 		{
-			if (m_rods[i].isInReach(ballPosition))
+			if (m_rods[i].isInRange(ballPosition))
 			{
 				return i;
 			}
@@ -67,6 +67,16 @@ public:
 		m_rods[2].setRodParameters(RED, ATTACK);
 		m_rods[3].setRodParameters(BLUE, DEFENSE);
 	};
+
+	bool isBallInReach(Rod& rod)
+	{
+		BallPosition position = m_ball.getBallPosition();
+		if (rod.isInRange(position.y)) {
+			if (m_grid[position.x][position.y])
+				return true;
+		}
+		return false;
+	}
 
 	void InitialiseGame() {
 		m_ball.resetBallPosition();
@@ -255,14 +265,41 @@ public:
 	}
 
 	void getActions(RodAction(&rodActions)[4]) {
-
-		
+		BallPosition position = m_ball.getBallPosition();
+		/* Set the actions of the home team rods to No Action */
+		if (m_homeTeam == RED)
+		{
+			rodActions[0].setNoAction();
+			rodActions[2].setNoAction();
+			if (isBallInReach(m_rods[0])
+				|| isBallInReach(m_rods[2])
+				|| position.y == m_rods[0].getPositionInGrid()
+				|| position.y == m_rods[2].getPositionInGrid())
+				Qlearning(rodActions);
+			else
+				simpleReflex(rodActions);
+		}
+		else 
+		{
+			rodActions[1].setNoAction();
+			rodActions[3].setNoAction();
+			if (isBallInReach(m_rods[1])
+				|| isBallInReach(m_rods[3])
+				|| position.y == m_rods[1].getPositionInGrid()
+				|| position.y == m_rods[3].getPositionInGrid())
+				Qlearning(rodActions);
+			else
+				simpleReflex(rodActions);
+		}
 	}
 
+	void Qlearning(RodAction(&rodActions)[4]) {
+		/* TODO: Implement the code of Q-learning , and any mistake or cheating
+		leads to a zero grade, even if all team members understand the code..*/
+	}
 	void simpleReflex(RodAction(&rodActions)[4]) 
 	{
 		BallPosition position = m_ball.getBallPosition();
-
 		if (m_homeTeam == RED)
 		{
 			if (position.y == 2)
@@ -325,6 +362,7 @@ public:
 	
 	RodAction Match(Rod rod) {
 		BallPosition position = m_ball.getBallPosition();
+
 		if (m_grid[position.x][rod.getPositionInGrid()] == 5)
 			return RodAction(NO_ACTION);
 
