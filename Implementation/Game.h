@@ -294,9 +294,10 @@ public:
 	}
 
 	void Qlearning(RodAction(&rodActions)[4]) {
-		/* TODO: Implement the code of Q-learning , and any mistake or cheating
-		leads to a zero grade, even if all team members understand the code..*/
+		/* TODO: Implement the code of Q-learning */
+
 	}
+
 	void simpleReflex(RodAction(&rodActions)[4]) 
 	{
 		BallPosition position = m_ball.getBallPosition();
@@ -318,7 +319,7 @@ public:
 				if (m_ball.getBallPower() == 0)
 					rodActions[2] = Match(m_rods[2]);
 				else
-					rodActions[2] = Match(m_rods[2]);
+					rodActions[2].setNoAction();
 			}
 			if (position.y == 7) 
 			{
@@ -360,12 +361,20 @@ public:
 
 	}
 	
+	/** This function aligns the position of the ball such that it eventually comes to a player 
+		  in Rod rod.
+			@param rod to be aligned such that the ball always hits. 
+			@returns RodAction to be acted accordingly. 
+	*/
 	RodAction Match(Rod rod) {
+		/* Get the position of the ball */
 		BallPosition position = m_ball.getBallPosition();
 
+		/* If there is a player in the same row as the ball */
 		if (m_grid[position.x][rod.getPositionInGrid()] == 5)
 			return RodAction(NO_ACTION);
 
+		/* else move the rod either downwards or upwards */
 		if (rod.getOffset() == 0) {
 			return RodAction(MOVE, DOWN);
 		}
