@@ -6,18 +6,18 @@
 #include "Rod.h"
 #include "Action.h"
 #include "defs.h"
-class Game 
+class Game
 {
 private:
 	void initialiseGrid() {
 		for (unsigned int i = 0; i < MAX_GRID_ROWS; ++i) {
 			for (unsigned int j = 0; j < MAX_GRID_COLS; ++j) {
-				m_grid[i][j] = 0; 
+				m_grid[i][j] = 0;
 			}
 		}
 	}
 
-	void updateGrid() { 
+	void updateGrid() {
 		initialiseGrid();
 		for (unsigned int k = 0; k < RODS; ++k)
 		{
@@ -68,10 +68,6 @@ public:
 		m_rods[3].setRodParameters(BLUE, DEFENSE);
 	};
 
-	/** This function checks the position of the ball with respect to the player.
-		  @param rod to be acted on 
-			@returns true if the ball is in a valid kicking position by rod.
-	*/
 	bool isBallInReach(Rod& rod)
 	{
 		BallPosition position = m_ball.getBallPosition();
@@ -96,18 +92,18 @@ public:
 		if (GameLoop(rodActions))
 			gameEnd = true;
 		printMatrix(m_grid, m_ball.getBallPosition());
-		
+
 		if (gameEnd) {
 			if (m_winningTeam == RED)
 				cout << "WINNER : RED TEAM" << endl;
 			else
 				cout << "WINNER : BLUE TEAM" << endl;
 		}
-		
+
 	}
 
 	/**
-		This function UPDATES the position of the ball according to the status of the game.
+	This function UPDATES the position of the ball according to the status of the game.
 	*/
 	void updateBall()
 	{
@@ -141,9 +137,9 @@ public:
 	}
 
 	/**
-		This function performs an action on a specific rod
-		@param action to performed on a rod (KICK, MOVE, NO_ACTION)
-		@param rodIndex the index of the rod to be acted upon (1, 2, 3, 4)
+	This function performs an action on a specific rod
+	@param action to performed on a rod (KICK, MOVE, NO_ACTION)
+	@param rodIndex the index of the rod to be acted upon (1, 2, 3, 4)
 	*/
 	void updateGame(RodAction action, int rodIndex)
 	{
@@ -152,13 +148,13 @@ public:
 
 		/* Get the current ball position */
 		BallPosition ballPosition = m_ball.getBallPosition();
-		
+
 		if (actionType == Action::MOVE) {
 			Direction direction = action.getActionDirection();
 			m_rods[rodIndex].changeOffset(direction);
-		} 
+		}
 
-		if (actionType == Action::KICK && m_grid[ballPosition.x][ballPosition.y]) 
+		if (actionType == Action::KICK && m_grid[ballPosition.x][ballPosition.y])
 		{
 			m_ball.setBallPower(action.getActionForce());
 			m_ball.setBallDirection(action.getActionDirection());
@@ -166,10 +162,10 @@ public:
 		}
 	}
 
-	/** 
-		This function is responsible for one iteration of the game. 
-		@param actions[] an array of actions to be performed on every rod successively. 
-		@return true if the current iteration ended with scoring a goal, false otherwise.
+	/**
+	This function is responsible for one iteration of the game.
+	@param actions[] an array of actions to be performed on every rod successively.
+	@return true if the current iteration ended with scoring a goal, false otherwise.
 	*/
 	bool GameLoop(RodAction actions[]) {
 		/* Find the rod that can do something with the ball */
@@ -186,7 +182,7 @@ public:
 		updateBall();
 
 		/* check if the ball is a goal position and announce the winner */
-		if (isGoal() && (oldPosition == m_ball.getBallPosition())) 
+		if (isGoal() && (oldPosition == m_ball.getBallPosition()))
 		{
 			if (rodinControl == 0)
 				m_winningTeam = BLUE;
@@ -283,7 +279,7 @@ public:
 			else
 				simpleReflex(rodActions);
 		}
-		else 
+		else
 		{
 			rodActions[1].setNoAction();
 			rodActions[3].setNoAction();
@@ -302,7 +298,7 @@ public:
 
 	}
 
-	void simpleReflex(RodAction(&rodActions)[4]) 
+	void simpleReflex(RodAction(&rodActions)[4])
 	{
 		BallPosition position = m_ball.getBallPosition();
 		if (m_homeTeam == RED)
@@ -334,7 +330,7 @@ public:
 				else
 					rodActions[2] = Match(m_rods[2]);
 			}
-			if (position.y == 7) 
+			if (position.y == 7)
 			{
 				if (m_ball.getBallPower() == 0)
 					rodActions[2] = Match(m_rods[2]);
@@ -390,11 +386,11 @@ public:
 		}
 
 	}
-	
-	/** This function aligns the position of the ball such that it eventually comes to a player 
-		  in Rod rod.
-			@param rod to be aligned such that the ball always hits. 
-			@returns RodAction to be acted accordingly. 
+
+	/** This function aligns the position of the ball such that it eventually comes to a player
+	in Rod rod.
+	@param rod to be aligned such that the ball always hits.
+	@returns RodAction to be acted accordingly.
 	*/
 	RodAction Match(Rod rod) {
 		/* Get the position of the ball */
@@ -410,7 +406,7 @@ public:
 		}
 		else if (rod.getOffset() == 2) {
 			return RodAction(MOVE, UP);
-		} 
+		}
 		else
 		{
 			int middlePlayer = rod.getOffset() + 2;
