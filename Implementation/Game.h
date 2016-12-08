@@ -68,6 +68,10 @@ public:
 		m_rods[3].setRodParameters(BLUE, DEFENSE);
 	};
 
+	/** This function checks the position of the ball with respect to the player.
+		  @param rod to be acted on 
+			@returns true if the ball is in a valid kicking position by rod.
+	*/
 	bool isBallInReach(Rod& rod)
 	{
 		BallPosition position = m_ball.getBallPosition();
@@ -303,6 +307,14 @@ public:
 		BallPosition position = m_ball.getBallPosition();
 		if (m_homeTeam == RED)
 		{
+			if (position.y == 0 || position.y == 1)
+			{
+				if (isBallInReach(m_rods[0])) {
+					rodActions[0].setActionKick(FORWARD, 1);
+				}
+				else
+					rodActions[0] = Match(m_rods[0]);
+			}
 			if (position.y == 2)
 			{
 				if (m_ball.getBallPower() == 0)
@@ -314,12 +326,13 @@ public:
 			{
 				rodActions[0] = Match(m_rods[0]);
 			}
-			if (position.y == 5)
+			if (position.y == 5 || position.y == 6)
 			{
-				if (m_ball.getBallPower() == 0)
-					rodActions[2] = Match(m_rods[2]);
+				if (isBallInReach(m_rods[2])) {
+					rodActions[2].setActionKick(FORWARD, 1);
+				}
 				else
-					rodActions[2].setNoAction();
+					rodActions[2] = Match(m_rods[2]);
 			}
 			if (position.y == 7) 
 			{
@@ -335,6 +348,15 @@ public:
 		}
 		else
 		{
+			if (position.y == 10 || position.y == 9)
+			{
+				if (isBallInReach(m_rods[3])) {
+					rodActions[3].setActionKick(FORWARD, 1);
+				}
+				else
+					rodActions[3] = Match(m_rods[3]);
+			}
+
 			if (position.y == 8)
 			{
 				if (m_ball.getBallPower() == 0)
@@ -345,6 +367,14 @@ public:
 			if (position.y == 7)
 			{
 				rodActions[3] = Match(m_rods[3]);
+			}
+			if (position.y == 4)
+			{
+				if (isBallInReach(m_rods[1])) {
+					rodActions[1].setActionKick(FORWARD, 1);
+				}
+				else
+					rodActions[1] = Match(m_rods[1]);
 			}
 			if (position.y == 3)
 			{

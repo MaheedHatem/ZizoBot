@@ -98,8 +98,10 @@ void Game3()
 	RodAction action4(NO_ACTION);
 
 	RodAction rodActions[4] = { action1, action2, action3, action4 };
+	
 	game.step(rodActions);
 	rodActions[2].setNoAction();
+	
 	game.step(rodActions);
 	rodActions[2].setActionKick(UP, 3);
 	game.step(rodActions);
