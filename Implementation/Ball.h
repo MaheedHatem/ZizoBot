@@ -27,8 +27,8 @@ public:
 	}
 
 	void resetBallPosition() {
-		m_position.x = 2;
-		m_position.y = 3;
+		m_position.x = 3;
+		m_position.y = 4;
 	}
 
 	bool isOnBorder(BallPosition newPos) {
@@ -38,7 +38,7 @@ public:
 	}
 	bool updateBallPosition(BallPosition newPos) {
 		/* If the position of the ball is on the borders */
-		if (isOnBorder(newPos))
+		if (isOnBorder(newPos) && m_direction != FORWARD)
 			m_power = 0;
 
 		if (isValidx(newPos.x) && isValidy(newPos.y))

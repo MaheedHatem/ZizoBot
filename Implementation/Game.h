@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "Rod.h"
 #include "Action.h"
+#include "Qlearner.h"
 #include "defs.h"
 class Game
 {
@@ -56,8 +57,9 @@ public:
 	Team m_awayTeam;
 	Team m_winningTeam;
 	RodAction m_lastKickPosition;
+	Qlearner m_LearningAgent;
 
-	Game(Team home = RED, Team away = BLUE) {
+	Game(Team home = RED, Team away = BLUE, float alpha = 0.0f, float gamma = 0.0f, float epsilon = 1.0f) {
 		initialiseGrid();
 		m_homeTeam = home;
 		m_awayTeam = away;
@@ -66,6 +68,7 @@ public:
 		m_rods[1].setRodParameters(BLUE, ATTACK);
 		m_rods[2].setRodParameters(RED, ATTACK);
 		m_rods[3].setRodParameters(BLUE, DEFENSE);
+		m_LearningAgent.setParameters(m_homeTeam, alpha, gamma, epsilon);
 	};
 
 	bool isBallInReach(Rod& rod)
@@ -295,7 +298,8 @@ public:
 
 	void Qlearning(RodAction(&rodActions)[4]) {
 		/* TODO: Implement the code of Q-learning */
-
+		int index = getRodInControl();
+		rodActions[index] = m_LearningAgent.getBestAction(m_rods[index], m_ball.getBallPosition());
 	}
 
 	void simpleReflex(RodAction(&rodActions)[4])

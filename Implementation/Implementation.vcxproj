@@ -151,10 +151,16 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Qlearner.h" />
     <ClInclude Include="Rod.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="q1.txt" />
+    <Text Include="red.txt" />
+    <Text Include="blue.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
