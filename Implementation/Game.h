@@ -24,7 +24,7 @@ private:
 		{
 			unsigned int from = m_rods[k].m_from_range;
 			unsigned int to = m_rods[k].m_to_range;
-			unsigned int offset = 2 - m_rods[k].getOffset(); //calculated from the top
+			unsigned int offset = m_rods[k].getOffset(); //calculated from the top
 			for (unsigned int i = 0; i < 3; ++i) {
 				for (unsigned int j = from; j <= to; ++j) {
 					int index = (i * 2) + offset;
@@ -274,10 +274,8 @@ public:
 		{
 			rodActions[0].setNoAction();
 			rodActions[2].setNoAction();
-			if (isBallInReach(m_rods[0])
-				|| isBallInReach(m_rods[2])
-				|| position.y == m_rods[0].getPositionInGrid()
-				|| position.y == m_rods[2].getPositionInGrid())
+			if ((isBallInReach(m_rods[0]) && position.y == m_rods[0].getPositionInGrid() + 1)
+				|| (isBallInReach(m_rods[2]) && position.y == m_rods[2].getPositionInGrid() + 1))
 				Qlearning(rodActions);
 			else
 				simpleReflex(rodActions);
@@ -286,10 +284,8 @@ public:
 		{
 			rodActions[1].setNoAction();
 			rodActions[3].setNoAction();
-			if (isBallInReach(m_rods[1])
-				|| isBallInReach(m_rods[3])
-				|| position.y == m_rods[1].getPositionInGrid()
-				|| position.y == m_rods[3].getPositionInGrid())
+			if ((isBallInReach(m_rods[1]) && position.y == m_rods[1].getPositionInGrid() + 1)
+				|| (isBallInReach(m_rods[3]) && position.y == m_rods[3].getPositionInGrid() + 1))
 				Qlearning(rodActions);
 			else
 				simpleReflex(rodActions);
@@ -297,9 +293,9 @@ public:
 	}
 
 	void Qlearning(RodAction(&rodActions)[4]) {
-		/* TODO: Implement the code of Q-learning */
 		int index = getRodInControl();
-		rodActions[index] = m_LearningAgent.getBestAction(m_rods[index], m_ball.getBallPosition());
+		BallPosition position = m_ball.getBallPosition();
+		rodActions[index] = m_LearningAgent.getAction(m_rods[index], position);
 	}
 
 	void simpleReflex(RodAction(&rodActions)[4])

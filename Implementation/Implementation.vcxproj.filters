@@ -52,5 +52,14 @@
     <Text Include="q1.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="q2.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="q3.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="q4.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

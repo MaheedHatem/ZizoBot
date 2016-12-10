@@ -138,7 +138,10 @@ void Game4()
 {
 	Team homeTeam = Team::RED;
 	Team awayTeam = Team::BLUE;
-	Game game(homeTeam, awayTeam);
+	float alpha = 0.5f;
+	float gamma = 0.2f; 
+	float epsilon = 0.0f;
+	Game game(homeTeam, awayTeam,alpha, gamma, epsilon);
 
 	game.InitialiseGame();
 	game.Print();
@@ -153,38 +156,30 @@ void Game4()
 	game.getActions(rodActions);
 	game.step(rodActions);
 
-	rodActions[1].setActionKick(UP, 5);
 	game.getActions(rodActions);
 	game.step(rodActions);
 
-
-	/*rodActions[2].setNoAction();
-	game.step(rodActions);
-	rodActions[2].setActionKick(UP, 3);
-	game.step(rodActions);
-	rodActions[2].setNoAction();
-	game.step(rodActions);
-	game.step(rodActions);
-	game.step(rodActions);
+	game.getActions(rodActions);
 	game.step(rodActions);
 
-	rodActions[3].setActionMove(UP);
+	game.getActions(rodActions);
 	game.step(rodActions);
 
-	rodActions[3].setActionKick(DOWN, 5);
+	rodActions[3].setActionKick(DOWN, 3);
+	game.getActions(rodActions);
 	game.step(rodActions);
 
-	rodActions[3].setNoAction();
-	for (int i = 0; i < 4; i++) {
-		game.step(rodActions);
-	}
+	game.getActions(rodActions);
+	game.step(rodActions);
 
-	rodActions[1].setActionKick(UP, 3);
+	game.getActions(rodActions);
 	game.step(rodActions);
-	rodActions[3].setActionKick(UP, 5);
-	rodActions[1].setNoAction();
+
+	game.getActions(rodActions);
 	game.step(rodActions);
-	game.step(rodActions);*/
+
+	game.getActions(rodActions);
+	game.step(rodActions);
 }
 
 // A simple program  to drive the project 

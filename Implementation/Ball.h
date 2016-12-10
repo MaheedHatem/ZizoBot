@@ -28,7 +28,7 @@ public:
 
 	void resetBallPosition() {
 		m_position.x = 3;
-		m_position.y = 4;
+		m_position.y = 5;
 	}
 
 	bool isOnBorder(BallPosition newPos) {

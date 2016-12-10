@@ -13,7 +13,7 @@
 
 class Qlearner
 {
-public:
+private:
 	Team m_homeTeam;
 	int m_rewardGrid[MAX_GRID_ROWS][MAX_GRID_COLS];
 	float m_alpha;
@@ -22,7 +22,9 @@ public:
 	float m_LearningDefender[STATES][ACTIONS];
 	float m_LearningAttacker[STATES][ACTIONS];
 
+public:
 	Qlearner(Team home_team = RED, float alpha = 0.0f, float gamma = 0.0f, float epsilon = 1.0f) {
+		srand(static_cast<unsigned>(time(NULL)));
 		setParameters(home_team, alpha, gamma, epsilon);
 	}
 
@@ -43,7 +45,6 @@ public:
 		}
 	}
 	RodAction getAction(Rod& rod, BallPosition& position) {
-		srand(static_cast<unsigned>(time(NULL)));
 		float random = (rand() % 100) / 100.0f;
 		if (random < m_epsilon)
 		{
@@ -52,11 +53,12 @@ public:
 		}
 		else
 		{
+			RodAction action = getBestAction(rod, position);
 			ostringstream converter;
-			converter << rod.getPositionInGrid();
+			converter << rod.getRodNo();
 			std::string filePath = "q" + converter.str() + ".txt";
-			writeMatrix(filePath, (Matrix)rod.getPositionInGrid());
-			return getBestAction(rod, position);
+			writeMatrix(filePath, (Matrix)rod.getRodNo());
+			return action;
 		}
 	}
 
@@ -86,13 +88,16 @@ public:
 	
 	RodAction getBestAction(Rod& rod, BallPosition& ballPosition) {
 		int currentState = getCurrentState(rod, ballPosition);
-		int position = rod.getPositionInGrid();
 		float qValue = 0.0f;
-		float maxQ = 0;
 		int bestAction = -1;
+		unsigned int from = 0;
+		unsigned int to = 3;
+		if (currentState == 0) { to = 2; }
+		else if (currentState == 8) { from = 1; }
 
-		if (position == 0 || position == 3) {
-			for (int i = 0; i < 3; ++i) {
+		if (rod.getRodPosition() == DEFENSE) {
+			float maxQ = m_LearningDefender[currentState][from];
+			for (unsigned int i = from; i < to; ++i) {
 				qValue = m_LearningDefender[currentState][i];
 				if (maxQ <= qValue) {
 					maxQ = qValue;
@@ -104,8 +109,9 @@ public:
 				m_alpha*(reward + (m_gamma*maxQ) - m_LearningDefender[currentState][bestAction+1]);
 		}
 		
-		if (position == 1 || position == 2) {
-			for (int i = 0; i < 3; ++i) {
+		if (rod.getRodPosition() == ATTACK) {
+			float maxQ = m_LearningAttacker[currentState][from];
+			for (unsigned int i = from; i < to; ++i) {
 				qValue = m_LearningAttacker[currentState][i];
 				if (maxQ <= qValue) {
 					maxQ = qValue;
@@ -159,12 +165,6 @@ public:
 		return m_rewardGrid[position.x][position.y];
 	}
 
-	RodAction getQAction(Rod& rod, Ball& ball)
-	{
-		/* get the current state */
-	}
-
-
 	void readMatrix(std::string Path, Matrix matrix)
 	{
 		std::ifstream reader;
@@ -177,14 +177,14 @@ public:
 				}
 			}
 		}
-		else if (matrix == QVALUES1 || matrix == QVALUES3) {
+		else if (matrix == QVALUES1 || matrix == QVALUES4) {
 			for (int i = 0; i < STATES; ++i) {
 				for (int j = 0; j < ACTIONS; ++j) {
 					reader >> m_LearningDefender[i][j];
 				}
 			}
 		}
-		else if (matrix == QVALUES2 || matrix == QVALUES4) {
+		else if (matrix == QVALUES2 || matrix == QVALUES3) {
 			for (int i = 0; i < STATES; ++i) {
 				for (int j = 0; j < ACTIONS; ++j) {
 					reader >> m_LearningAttacker[i][j];
@@ -199,25 +199,23 @@ public:
 		std::ofstream writer;
 		writer.open(path);
 
-		if (matrix == REWARD) {
-			for (int i = 0; i < MAX_GRID_ROWS; ++i) {
-				for (int j = 0; j < MAX_GRID_COLS; ++j) {
-					writer << m_rewardGrid[i][j];
-				}
-			}
-		}
-		else if (matrix == QVALUES1 || matrix == QVALUES3) {
+		if (matrix == QVALUES1 || matrix == QVALUES3) {
 			for (int i = 0; i < STATES; ++i) {
+				string delimiter = "";
 				for (int j = 0; j < ACTIONS; ++j) {
-					writer << m_LearningDefender[i][j];
+					writer << delimiter << m_LearningDefender[i][j];
+					delimiter = " ";
 				}
 			}
 		}
 		else if (matrix == QVALUES2 || matrix == QVALUES4) {
 			for (int i = 0; i < STATES; ++i) {
+				string delimiter = "";
 				for (int j = 0; j < ACTIONS; ++j) {
-					writer << m_LearningAttacker[i][j];
+					writer << delimiter << m_LearningAttacker[i][j];
+					delimiter = " ";
 				}
+				writer << endl;
 			}
 		}
 		writer.close();

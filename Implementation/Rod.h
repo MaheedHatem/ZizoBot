@@ -67,24 +67,29 @@ public:
 	void changeOffset(Direction direction) 
 	{
 		if (direction == UP)
-			incrementOffset();
-		else if (direction == DOWN)
 			decrementOffset();
+		else if (direction == DOWN)
+			incrementOffset();
 	}
 
-	unsigned int getOffset()
+	unsigned int getOffset() const
 	{
 		return m_offset;
 	}
 
-	unsigned int getRodNo()
+	unsigned int getRodNo() const
 	{
 		return m_rodNo;
 	}
 
-	unsigned int getPositionInGrid()
+	unsigned int getPositionInGrid() const
 	{
 		return m_positionInGrid;
+	}
+
+	RodPosition getRodPosition() const
+	{
+		return m_position;
 	}
 };
 

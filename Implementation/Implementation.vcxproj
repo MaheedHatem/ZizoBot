@@ -159,6 +159,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="q1.txt" />
+    <Text Include="q2.txt" />
+    <Text Include="q3.txt" />
+    <Text Include="q4.txt" />
     <Text Include="red.txt" />
     <Text Include="blue.txt" />
   </ItemGroup>
