@@ -416,6 +416,11 @@ public:
 				return RodAction(MOVE, DOWN);
 		}
 	}
+
+	BallPosition getBallPosition() const
+	{
+		return m_ball.getBallPosition();
+	}
 };
 
 #endif // ! _GAME_H
