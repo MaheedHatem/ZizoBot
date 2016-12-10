@@ -204,5 +204,4 @@ void main() {
 	//Game2();
 	//Game3();
 	Game4();
-	system("pause");
 }
