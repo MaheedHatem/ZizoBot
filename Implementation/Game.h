@@ -51,6 +51,8 @@ private:
 
 public:
 	int m_grid[MAX_GRID_ROWS][MAX_GRID_COLS];
+	int m_homeScore;
+	int m_awayScore;
 	Ball m_ball;
 	Rod m_rods[RODS];
 	Team m_homeTeam;
@@ -64,6 +66,8 @@ public:
 		m_homeTeam = home;
 		m_awayTeam = away;
 		m_winningTeam = home;
+		m_homeScore = 0;
+		m_awayScore = 0;
 		m_rods[0].setRodParameters(RED, DEFENSE);
 		m_rods[1].setRodParameters(BLUE, ATTACK);
 		m_rods[2].setRodParameters(RED, ATTACK);
@@ -83,6 +87,9 @@ public:
 
 	void InitialiseGame() {
 		m_ball.resetBallPosition();
+		for (int k = 0; k < RODS; ++k) {
+			m_rods[k].initialiseRod();
+		}
 		updateGrid();
 	}
 
@@ -91,18 +98,21 @@ public:
 	}
 
 	void step(RodAction rodActions[]) {
-		bool gameEnd = false;
+		/*if the current game loop iteration ended with scoring a goal */
 		if (GameLoop(rodActions))
-			gameEnd = true;
-		printMatrix(m_grid, m_ball.getBallPosition());
-
-		if (gameEnd) {
-			if (m_winningTeam == RED)
-				cout << "WINNER : RED TEAM" << endl;
+		{
+			InitialiseGame();
+			if (m_winningTeam == m_homeTeam)
+				m_homeScore++;
 			else
-				cout << "WINNER : BLUE TEAM" << endl;
+				m_awayScore++;
 		}
 
+		/*
+		The next part is for displaying purposes, other teams can neglect it or
+		comment it.
+		*/
+		printMatrix(m_grid, m_ball.getBallPosition());
 	}
 
 	/**
@@ -187,7 +197,7 @@ public:
 		/* check if the ball is a goal position and announce the winner */
 		if (isGoal() && (oldPosition == m_ball.getBallPosition()))
 		{
-			if (rodinControl == 0)
+			if (rodinControl == 0) 
 				m_winningTeam = BLUE;
 			else
 				m_winningTeam = RED;
