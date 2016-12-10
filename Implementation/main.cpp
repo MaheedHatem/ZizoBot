@@ -185,7 +185,7 @@ void Game4()
 	game.getActions(rodActions);
 	game.step(rodActions);
 
-	while (true) {
+	for (int i=0; i<1000; ++i) {
 		game.getActions(rodActions);
 		game.step(rodActions);
 	}
