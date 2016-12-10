@@ -284,8 +284,8 @@ public:
 		{
 			rodActions[1].setNoAction();
 			rodActions[3].setNoAction();
-			if ((isBallInReach(m_rods[1]) && position.y == m_rods[1].getPositionInGrid() + 1)
-				|| (isBallInReach(m_rods[3]) && position.y == m_rods[3].getPositionInGrid() + 1))
+			if ((isBallInReach(m_rods[1]) && position.y == m_rods[1].getPositionInGrid() - 1)
+				|| (isBallInReach(m_rods[3]) && position.y == m_rods[3].getPositionInGrid() - 1))
 				Qlearning(rodActions);
 			else
 				simpleReflex(rodActions);

@@ -43,5 +43,5 @@ enum Action {MOVE, KICK, NO_ACTION};
 
 enum Direction {UP = 1, FORWARD = 0, DOWN = -1};
 
-enum Matrix {QVALUES1 = 0, QVALUES2 = 1, QVALUES3 = 2, QVALUES4 = 3, REWARD};
+enum Matrix {REWARD, QVALUES1, QVALUES2, QVALUES3, QVALUES4};
 
