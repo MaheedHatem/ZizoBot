@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Communication.h"
 #include  <iostream>
 using namespace std;
 
@@ -194,6 +194,8 @@ void main() {
 	//Game1();
 	//Game2();
 	//Game3();
-	Game4();
+	//Game4();
+	Communication comm;
+	comm.GameLoop();
 	system("pause");
 }
