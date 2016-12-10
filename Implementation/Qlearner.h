@@ -44,22 +44,14 @@ public:
 			readMatrix("q4.txt", QVALUES4);
 		}
 	}
+
 	RodAction getAction(Rod& rod, BallPosition& position) {
-		float random = (rand() % 100) / 100.0f;
-		if (random < m_epsilon)
-		{
-			int randomAction = (rand() % 3) - 1;
-			return RodAction(KICK, (Direction)randomAction, 5);
-		}
-		else
-		{
-			RodAction action = getBestAction(rod, position);
-			ostringstream converter;
-			converter << rod.getRodNo();
-			std::string filePath = "q" + converter.str() + ".txt";
-			writeMatrix(filePath, (Matrix)rod.getRodNo());
-			return action;
-		}
+		RodAction action = getBestAction(rod, position);
+		ostringstream converter;
+		converter << rod.getRodNo();
+		std::string filePath = "q" + converter.str() + ".txt";
+		writeMatrix(filePath, (Matrix)rod.getRodNo());
+		return action;
 	}
 
 	int getCurrentState (Rod& rod, BallPosition& ballPosition) {
@@ -85,43 +77,58 @@ public:
 		rowIndex += (offset * 3);
 		return rowIndex;
 	}
-	
-	RodAction getBestAction(Rod& rod, BallPosition& ballPosition) {
-		int currentState = getCurrentState(rod, ballPosition);
-		float qValue = 0.0f;
-		int bestAction = -1;
+	void findBestAction(int& bestAction, float& maxQ, float(&learningMatrix)[9][3], int currentState) {
 		unsigned int from = 0;
 		unsigned int to = 3;
 		if (currentState == 0) { to = 2; }
-		else if (currentState == 8) { from = 1; }
+		else if (currentState == 8) { from = 1; } 
+		
+		float random = (rand() % 100) / 100.0f;
+		if (random < m_epsilon)
+		{
+			bestAction = (rand() % (to - from)) + (from - 1);
+			return;
+		}
+
+		maxQ = learningMatrix[currentState][from];
+		for (unsigned int i = from; i < to; ++i) {
+			float qValue = learningMatrix[currentState][i];
+			if (maxQ <= qValue) {
+				maxQ = qValue;
+				bestAction = i - 1;
+			}
+		}
+	}
+
+	RodAction getBestAction(Rod& rod, BallPosition& ballPosition) {
+		int currentState = getCurrentState(rod, ballPosition);
+		int bestAction = -1;
+		float maxQ = 0.0f;
 
 		if (rod.getRodPosition() == DEFENSE) {
-			float maxQ = m_LearningDefender[currentState][from];
-			for (unsigned int i = from; i < to; ++i) {
-				qValue = m_LearningDefender[currentState][i];
-				if (maxQ <= qValue) {
-					maxQ = qValue;
-					bestAction = i-1;
-				}
-			} 
+			/*finds the maximum Q value for the possible actions */
+			findBestAction(bestAction, maxQ, m_LearningDefender, currentState);
+
+			/*computes the reward for the next state if this action is taken*/
 			int reward = getReward(ballPosition, (Direction)bestAction);
+			
+			/*updates the Q-values of the corresponding (state,action) pair*/
 			m_LearningDefender[currentState][bestAction+1] +=
 				m_alpha*(reward + (m_gamma*maxQ) - m_LearningDefender[currentState][bestAction+1]);
 		}
 		
 		if (rod.getRodPosition() == ATTACK) {
-			float maxQ = m_LearningAttacker[currentState][from];
-			for (unsigned int i = from; i < to; ++i) {
-				qValue = m_LearningAttacker[currentState][i];
-				if (maxQ <= qValue) {
-					maxQ = qValue;
-					bestAction = i-1;
-				}
-			}
+			/*finds the maximum Q value for the possible actions */
+			findBestAction(bestAction, maxQ, m_LearningAttacker, currentState);
+
+			/*computes the reward for the next state if this action is taken*/
 			int reward = getReward(ballPosition, (Direction)bestAction);
+		
+			/*updates the Q-values of the corresponding (state,action) pair*/
 			m_LearningAttacker[currentState][bestAction + 1] +=
 				m_alpha*(reward + (m_gamma*maxQ) - m_LearningAttacker[currentState][bestAction + 1]);
 		}
+
 		return RodAction(KICK, (Direction)bestAction, 5);
 	}
 

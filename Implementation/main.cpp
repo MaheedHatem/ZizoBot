@@ -140,7 +140,7 @@ void Game4()
 	Team awayTeam = Team::RED;
 	float alpha = 0.5f;
 	float gamma = 0.2f; 
-	float epsilon = 0.0f;
+	float epsilon = 1.0f;
 	Game game(homeTeam, awayTeam,alpha, gamma, epsilon);
 
 	game.InitialiseGame();
@@ -148,7 +148,7 @@ void Game4()
 
 	RodAction action1(NO_ACTION);
 	RodAction action2(MOVE, DOWN);
-	RodAction action3(KICK, FORWARD, 2);
+	RodAction action3(KICK, UP, 5);
 	RodAction action4(NO_ACTION);
 
 	RodAction rodActions[4] = { action1, action2, action3, action4 };
@@ -169,6 +169,7 @@ void Game4()
 	game.getActions(rodActions);
 	game.step(rodActions);
 
+	rodActions[2].setActionMove(UP);
 	game.getActions(rodActions);
 	game.step(rodActions);
 
@@ -180,6 +181,14 @@ void Game4()
 
 	game.getActions(rodActions);
 	game.step(rodActions);
+
+	game.getActions(rodActions);
+	game.step(rodActions);
+
+	while (true) {
+		game.getActions(rodActions);
+		game.step(rodActions);
+	}
 }
 
 // A simple program  to drive the project 
