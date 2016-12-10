@@ -30,6 +30,11 @@ public:
 	Rod() : m_offset(1), m_from_range(0), m_to_range(0)
 	{ };
 
+	void initialiseRod()
+	{
+		m_offset = 1;
+	}
+
 	void setRodParameters(Team team, RodPosition position)
 	{
 		m_team = team;

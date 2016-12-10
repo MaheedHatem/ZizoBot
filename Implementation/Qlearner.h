@@ -199,16 +199,17 @@ public:
 		std::ofstream writer;
 		writer.open(path);
 
-		if (matrix == QVALUES1 || matrix == QVALUES3) {
+		if (matrix == QVALUES1 || matrix == QVALUES4) {
 			for (int i = 0; i < STATES; ++i) {
 				string delimiter = "";
 				for (int j = 0; j < ACTIONS; ++j) {
 					writer << delimiter << m_LearningDefender[i][j];
 					delimiter = " ";
 				}
+				writer << endl;
 			}
 		}
-		else if (matrix == QVALUES2 || matrix == QVALUES4) {
+		else if (matrix == QVALUES2 || matrix == QVALUES3) {
 			for (int i = 0; i < STATES; ++i) {
 				string delimiter = "";
 				for (int j = 0; j < ACTIONS; ++j) {

@@ -136,8 +136,8 @@ void Game3()
 
 void Game4()
 {
-	Team homeTeam = Team::RED;
-	Team awayTeam = Team::BLUE;
+	Team homeTeam = Team::BLUE;
+	Team awayTeam = Team::RED;
 	float alpha = 0.5f;
 	float gamma = 0.2f; 
 	float epsilon = 0.0f;
@@ -165,7 +165,7 @@ void Game4()
 	game.getActions(rodActions);
 	game.step(rodActions);
 
-	rodActions[3].setActionKick(DOWN, 3);
+	//rodActions[3].setActionKick(DOWN, 3);
 	game.getActions(rodActions);
 	game.step(rodActions);
 
