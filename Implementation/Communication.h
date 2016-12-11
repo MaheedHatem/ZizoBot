@@ -54,9 +54,12 @@ private:
 		DWORD dwRead;
 		ReadFile(hDownPipe, buffer, sizeof(buffer) - 1, &dwRead, NULL);
 		buffer[dwRead] = '\0';
+		stringstream ss(buffer);
+		string team; float alpha, gamma, epsilon;
+		ss >> team >> alpha >> gamma >> epsilon;
 		Team homeTeam;
 		Team awayTeam;
-		if (strcmp(buffer, "RED") == 0) {
+		if (team == "RED") {
 			homeTeam = Team::RED;
 			awayTeam = Team::BLUE;
 		}
@@ -65,7 +68,7 @@ private:
 			awayTeam = Team::RED;
 		}
 
-		Game game(homeTeam, awayTeam);
+		Game game(homeTeam, awayTeam , alpha , gamma , epsilon);
 
 		game.InitialiseGame();
 		return game;
@@ -156,7 +159,7 @@ public:
 			ParseActions(rodActions, buffer);
 			game.step(rodActions);
 			BallPosition ballPosition = game.m_ball.getBallPosition();
-			string message = to_string(ballPosition.x) + " " + to_string(ballPosition.y) +"\n";
+			string message = to_string(ballPosition.x) + " " + to_string(ballPosition.y) + " " + to_string(game.m_homeScore) + " " + to_string(game.m_awayScore) +"\n";
 			WriteFile(hUpPipe, message.c_str(), message.length(), &dwWritten, NULL);
 			game.getActions(rodActions);
 			message = getMessageToInterface(rodActions) + "\n";
