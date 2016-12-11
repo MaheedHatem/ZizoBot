@@ -77,6 +77,7 @@ public:
 		rowIndex += (offset * 3);
 		return rowIndex;
 	}
+
 	void findBestAction(int& bestAction, float& maxQ, float(&learningMatrix)[9][3], int currentState) {
 		unsigned int from = 0;
 		unsigned int to = 3;
@@ -87,6 +88,7 @@ public:
 		if (random < m_epsilon)
 		{
 			bestAction = (rand() % (to - from)) + (from - 1);
+			maxQ = learningMatrix[currentState][bestAction + 1];
 			return;
 		}
 
@@ -106,25 +108,25 @@ public:
 		float maxQ = 0.0f;
 
 		if (rod.getRodPosition() == DEFENSE) {
-			/*finds the maximum Q value for the possible actions */
+			/* finds the maximum Q value for the possible actions */
 			findBestAction(bestAction, maxQ, m_LearningDefender, currentState);
 
-			/*computes the reward for the next state if this action is taken*/
+			/* computes the reward for the next state if this action is taken */
 			int reward = getReward(ballPosition, (Direction)bestAction);
 			
-			/*updates the Q-values of the corresponding (state,action) pair*/
+			/* updates the Q-values of the corresponding (state,action) pair */
 			m_LearningDefender[currentState][bestAction+1] +=
 				m_alpha*(reward + (m_gamma*maxQ) - m_LearningDefender[currentState][bestAction+1]);
 		}
 		
 		if (rod.getRodPosition() == ATTACK) {
-			/*finds the maximum Q value for the possible actions */
+			/* finds the maximum Q value for the possible actions */
 			findBestAction(bestAction, maxQ, m_LearningAttacker, currentState);
 
-			/*computes the reward for the next state if this action is taken*/
+			/* computes the reward for the next state if this action is taken */
 			int reward = getReward(ballPosition, (Direction)bestAction);
 		
-			/*updates the Q-values of the corresponding (state,action) pair*/
+			/* updates the Q-values of the corresponding (state,action) pair */
 			m_LearningAttacker[currentState][bestAction + 1] +=
 				m_alpha*(reward + (m_gamma*maxQ) - m_LearningAttacker[currentState][bestAction + 1]);
 		}
