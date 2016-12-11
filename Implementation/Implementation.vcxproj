@@ -147,7 +147,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Action.h" />
-    <ClInclude Include="Agent.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="Game.h" />

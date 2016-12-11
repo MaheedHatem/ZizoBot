@@ -30,9 +30,6 @@
     <ClInclude Include="Rod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Agent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Qlearner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
