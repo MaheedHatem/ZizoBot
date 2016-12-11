@@ -136,8 +136,8 @@ void Game3()
 
 void Game4()
 {
-	Team homeTeam = Team::BLUE;
-	Team awayTeam = Team::RED;
+	Team homeTeam = Team::RED;
+	Team awayTeam = Team::BLUE;
 	float alpha = 0.5f;
 	float gamma = 0.2f; 
 	float epsilon = 1.0f;
@@ -145,6 +145,7 @@ void Game4()
 
 	game.InitialiseGame();
 	game.Print();
+	srand(static_cast<unsigned>(time(NULL)));
 
 	RodAction action1(NO_ACTION);
 	RodAction action2(MOVE, DOWN);
@@ -165,7 +166,8 @@ void Game4()
 	game.getActions(rodActions);
 	game.step(rodActions);
 
-	//rodActions[3].setActionKick(DOWN, 3);
+	//rodActions[3].setActionMove(DOWN);
+	//rodActions[3].setActionKick(UP, 3);
 	game.getActions(rodActions);
 	game.step(rodActions);
 
@@ -186,6 +188,23 @@ void Game4()
 	game.step(rodActions);
 
 	for (int i=0; i<1000; ++i) {
+		int action = rand() % 4;
+		if (action == 0) {
+			rodActions[1].setActionMove(((Direction)((rand() % 3) - 1)));
+			rodActions[3].setActionMove(((Direction)((rand() % 3) - 1)));
+		}
+		else if (action == 1) {
+			rodActions[1].setActionMove(((Direction)((rand() % 3) - 1)));
+			rodActions[3].setActionKick(((Direction)((rand() % 3) - 1)), rand() % 5 + 1);
+		}
+		else if (action == 2) {
+			rodActions[1].setActionMove(((Direction)((rand() % 3) - 1)));
+			rodActions[3].setActionKick(((Direction)((rand() % 3) - 1)), rand() % 5 + 1);
+		}
+		else if (action == 3) {
+			rodActions[1].setActionKick(((Direction)((rand() % 3) - 1)), rand()%5 + 1);
+			rodActions[3].setActionKick(((Direction)((rand() % 3) - 1)), rand() % 5 + 1);
+		}
 		game.getActions(rodActions);
 		game.step(rodActions);
 	}
@@ -203,5 +222,7 @@ void main() {
 	//Game1();
 	//Game2();
 	//Game3();
-	Game4();
+	for (int i=0; i<10; ++i) {
+		Game4();
+	}
 }
