@@ -68,7 +68,7 @@ private:
 			awayTeam = Team::RED;
 		}
 
-		Game game(homeTeam, awayTeam , alpha , gamma , epsilon);
+		Game game(homeTeam, awayTeam);//, alpha, gamma, epsilon);
 
 		game.InitialiseGame();
 		return game;
