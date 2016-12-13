@@ -1,3 +1,4 @@
+#include "Communication.h"
 #include "Game.h"
 #include  <iostream>
 using namespace std;
@@ -171,9 +172,6 @@ void Game4()
 	game.getActions(rodActions);
 	game.step(rodActions);
 
-	rodActions[2].setActionMove(UP);
-	game.getActions(rodActions);
-	game.step(rodActions);
 
 	game.getActions(rodActions);
 	game.step(rodActions);
@@ -219,10 +217,7 @@ colliding with teammate, colliding with opponent)
 Second Game to test a very simple case of winning and scoring a goal.
 */
 void main() {
-	//Game1();
-	//Game2();
-	//Game3();
-	for (int i=0; i<10; ++i) {
-		Game4();
-	}
+	Communication comm;
+	comm.GameLoop();
+	system("pause");
 }
