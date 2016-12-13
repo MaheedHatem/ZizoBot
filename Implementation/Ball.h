@@ -36,6 +36,7 @@ public:
 			((newPos.x == 1) && (newPos.y == 0 || newPos.y == 10)) ||
 			((newPos.x == 5) && (newPos.y == 0 || newPos.y == 10)));
 	}
+
 	bool updateBallPosition(BallPosition newPos) {
 		/* If the position of the ball is on the borders */
 		if (isOnBorder(newPos) && m_direction != FORWARD)
